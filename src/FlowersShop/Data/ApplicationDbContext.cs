@@ -27,5 +27,7 @@ namespace FlowersShop.Data
         public DbSet<ProductViewModel> ProductViewModel { get; set; }
 
         public DbSet<ProductToOrder> ProductToOrder { get; set; }
+
+        public DbSet<Order> Order { get; set; }
     }
 }

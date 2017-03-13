@@ -13,7 +13,13 @@ namespace FlowersShop.Models
 
         public int TotalPrice { get; set; }
 
-        public int ApplicationUserId { get; set; }
+        public bool IsFinished { get; set; }
+
+        public bool IsRealized { get; set; }
+
+        public DateTime? DateOfRealize { get; set; }
+
+        public string ApplicationUserId { get; set; }
 
         public virtual ApplicationUser ApplicationUser { get; set; }
 
