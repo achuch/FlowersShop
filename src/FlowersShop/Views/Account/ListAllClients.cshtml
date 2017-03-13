@@ -1,0 +1,48 @@
+﻿@model IEnumerable<FlowersShop.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutAdmin";
+}
+
+<h2>Klienci</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(modelItem => modelItem.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(modelItem => modelItem.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(modelItem => modelItem.LastName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(modelItem => modelItem.Type)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                
+            </tr>
+        }
+
+    </tbody>
+</table>

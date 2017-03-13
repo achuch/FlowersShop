@@ -1,0 +1,65 @@
+@model Tuple<FlowersShop.Models.ProductsViewModels.ProductViewModel, ProductToOrder>
+
+@{
+    ViewData["Title"] = "Details";
+    ViewBag.Id = Model.Item1.Id;
+}
+
+<h2>Details</h2>
+
+<div class="col-lg-6">
+    <h4>ProductViewModel</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Item1.Description)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Item1.Description)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Item1.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Item1.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Item1.Price)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Item1.Price)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Item1.Type)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Item1.Type)
+        </dd>
+    </dl>
+</div>
+<div class="col-lg-6">
+    <form asp-controller="ProductToOrders" asp-action="Create" asp-route-productId="@ViewBag.Id">
+        <div class="form-horizontal">
+            <h4>Dpdaj do zamowienia</h4>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Item2.AmountOfProduct" class="col-md-2 control-label"></label>
+                <div class="col-md-10">
+                    <input asp-for="Item2.AmountOfProduct" class="form-control" />
+                    <span asp-validation-for="Item2.AmountOfProduct" class="text-danger" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Dodaj" class="btn btn-default" />
+            </div>
+        </div>
+
+    </form>
+</div>
+<div>
+    @*<a asp-action="Edit" asp-route-id="@Model.Item1.Id">Edit</a> |*@
+    <a asp-action="Index" asp-controller="Home">Powrót</a>
+</div>

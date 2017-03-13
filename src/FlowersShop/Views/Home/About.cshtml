@@ -1,7 +1,47 @@
 ﻿@{
-    ViewData["Title"] = "About";
+    ViewData["Title"] = "Przewodnik po sklepie";
 }
-<h2>@ViewData["Title"].</h2>
-<h3>@ViewData["Message"]</h3>
+<h2 style="padding-left: 36%">@ViewData["Title"].</h2>
 
-<p>Use this area to provide additional information.</p>
+<h4 style="text-decoration-style: solid; padding-top: 16px;padding-left: 39%">Co ? Jak ? I w jakiej kolejności ?</h4>
+
+<div class="row">
+    <div class="div-how-to col-md-6">
+        <label style="padding: 5px; padding-left: 31%; padding-right: 30%"><h4><strong>1. Zarejestruj się !</strong></h4></label>
+        <p>Klikając <a asp-controller="Account" asp-action="Register">tutaj</a>, możesz zarejestrować swoje konto.</p>
+        <p>Rejestracja jest szybka i łatwa.</p>
+        <p>Warto zostać stałym klientem i otrzymać nawet do 40% rabatu na swoje zamówienie</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 div-how-to">
+        <label style="padding: 5px; padding-left: 31%;"><h4><strong>2. Przeglądaj produkty.</strong></h4></label>
+        <p>Przeglądaj produkty do woli, aż coś wpadnie Ci w oko</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 div-how-to">
+        <label style="padding: 5px; padding-left: 31%;"><h4><strong>3. Dodaj do koszyka</strong></h4></label>
+        <p>Wybierz ilość i dodaj do koszyka tyle produktów ile chcesz.<p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 div-how-to">
+        <label style="padding: 5px; padding-left: 31%;"><h4><strong>4. Sfinalizuj zamówienie</strong></h4></label>
+        <p>Wejdź do koszyka i zakończ zamówienie.<p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 div-how-to">
+        <label style="padding: 5px; padding-left: 31%;"><h4><strong>5. Wybierz adres zamówienia</strong></h4></label>
+        <p>Wpisz adres na kótry ma być dostarczone zamówienie.<p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6 div-how-to">
+        <label style="padding: 5px; padding-left: 31%;"><h4><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;I gotowe !</strong></h4></label>
+        <p>Teraz tylko czekaj na przyjazd kuriera.<p>
+        <p>Płatnośc jest możliwa gotówką przy dostarczeniu przez kuriera lub na podane konto.<p>
+        <p>W przypadku wyboru płatności na konto, aby płatnośc została zaakceptowana potrzeba jednego dnia roboczego.<p>
+    </div>
+</div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using FlowersShop.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -22,19 +23,35 @@ namespace FlowersShop.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly ApplicationDbContext _context;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
+            _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult ListAllClients()
+        {
+            var Clients = _context.Users.Where(u => u.Type == false).ToList();
+            return View(Clients);
+        }
+
+        [HttpGet]
+        public IActionResult AdminPanel()
+        {
+            return View();
         }
 
         //
@@ -63,7 +80,11 @@ namespace FlowersShop.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation(1, "User logged in.");
-                    return RedirectToLocal(returnUrl);
+                    var user = _context.Users.Where(u => u.Email == model.Email && u.Type == true).ToList();
+                    if(user.Count == 0)
+                        return RedirectToLocal(returnUrl);
+                    else if (user.Count == 1)
+                        return RedirectToAction("AdminPanel");
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -105,7 +126,10 @@ namespace FlowersShop.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email,
+                    Type = false,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName}; // Type 'false'- norma; user
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

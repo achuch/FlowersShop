@@ -48,3 +48,22 @@ textarea {
     display: none
   }
 }
+
+.headers {
+
+}
+
+.div-how-to{
+    margin: 1%; 
+    background-color: lightblue; 
+    margin-left: 29%; 
+    margin-right: 30%; 
+    padding: 1%;
+    box-shadow: 0 4px 8px 0 black;
+}
+
+ul.admin-panel-menu > li {
+    padding-top: 6px;
+    padding-bottom: 6px;
+
+}

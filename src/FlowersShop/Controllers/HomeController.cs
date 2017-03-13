@@ -2,15 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlowersShop.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowersShop.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ApplicationDbContext _context;
+
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            return View();
+            if (_context != null)
+            {
+                var list = _context.ProductViewModel.ToList();
+                return View(list);
+            }
+            else
+            {
+                return View();
+            }
+            
         }
 
         public IActionResult About()
