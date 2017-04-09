@@ -51,7 +51,10 @@ namespace FlowersShop.Controllers
         [HttpGet]
         public IActionResult AdminPanel()
         {
-            return View();
+            var list = _context.Order.Where(o => o.IsFinished == true && o.IsRealized == false).ToList();
+            //var list = _context.Order.Where(o => o.DateTime == DateTime.Now).ToList();
+            var listCount = list.Count;
+            return View(listCount);
         }
 
         //

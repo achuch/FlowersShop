@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using FlowersShop.Data;
 using FlowersShop.Models;
+using FlowersShop.Models.ProductsViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace FlowersShop.Controllers
 {
     public class ProductToOrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductToOrdersController(ApplicationDbContext context)
+        public ProductToOrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
 
         // GET: ProductToOrders
@@ -56,13 +61,44 @@ namespace FlowersShop.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AmountOfProduct,OrderId,ProductId,TotalPriceForThisProduct")] ProductToOrder productToOrder)
+        public async Task<IActionResult> Create(ProductsInOrderViewModel productsInOrderViewModel)
         {
+            ProductToOrder productToOrder = productsInOrderViewModel.ProductToOrder;
             if (ModelState.IsValid)
             {
+                var oneProduct = _context.ProductViewModel.First(s => s.Id == productToOrder.ProductId);
+                if (oneProduct.Amount < productToOrder.AmountOfProduct)
+                {
+                    return RedirectToAction("Details","Product",new {id = oneProduct.Id, message = "A01"});
+                }
+                productToOrder.Product = oneProduct;
+                productToOrder.ProductId = 0;
+                productToOrder.TotalPriceForThisProduct = productToOrder.AmountOfProduct * oneProduct.Price;
+                oneProduct.Amount = oneProduct.Amount - productToOrder.AmountOfProduct;
+                _context.Update(oneProduct);
+
+                var orderList = _context.Order.ToList();
+                Order order = new Order { ApplicationUserId = _userManager.GetUserId(User), DateTime = DateTime.Now, IsFinished = false, IsRealized = false, TotalPrice = 0 };
+                if (orderList.Count == 0)
+                {
+                   _context.Add(order);
+                    productToOrder.Order = order;
+                    productToOrder.Order.TotalPrice = productToOrder.TotalPriceForThisProduct;
+                   _context.Update(productToOrder.Order);
+                }
+                else
+                {
+                    var userId = _userManager.GetUserId(User);
+                    orderList = _context.Order.Where(o => o.ApplicationUserId == userId && o.IsFinished == false).ToList();
+                    productToOrder.Order = orderList.Count == 0 ? order : orderList.First();
+                    productToOrder.Order.TotalPrice = productToOrder.TotalPriceForThisProduct + productToOrder.Order.TotalPrice;
+                    //_context.Update(productToOrder.Order);
+                    //productToOrder.Order = order;
+                }
+               
                 _context.Add(productToOrder);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("Details", "Product", new { id = oneProduct.Id, message = "B01" });
             }
             ViewData["OrderId"] = new SelectList(_context.Set<Order>(), "Id", "Id", productToOrder.OrderId);
             ViewData["ProductId"] = new SelectList(_context.ProductViewModel, "Id", "Id", productToOrder.ProductId);

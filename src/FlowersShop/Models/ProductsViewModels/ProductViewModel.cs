@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace FlowersShop.Models.ProductsViewModels
 {
@@ -26,7 +27,10 @@ namespace FlowersShop.Models.ProductsViewModels
         [Display(Name = "Dost. ilosc")]
         public int Amount { get; set; }
 
-        public virtual ICollection<ProductToOrder> ProductToOrders { get; set; }
+        public List<ProductToOrder> ProductToOrders { get; set; }
+
+        public string File { get; set; }
+
 
     }
 }

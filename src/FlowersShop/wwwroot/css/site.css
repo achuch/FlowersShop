@@ -67,3 +67,7 @@ ul.admin-panel-menu > li {
     padding-bottom: 6px;
 
 }
+
+#main_table_products > tbody > tr > td {
+    padding-top: 6%;
+}

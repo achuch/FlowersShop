@@ -76,7 +76,19 @@ namespace FlowersShop.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AddressCity");
+
+                    b.Property<int?>("AddressLocalNumber");
+
+                    b.Property<string>("AddressStreet");
+
+                    b.Property<string>("AddressZipCode");
+
+                    b.Property<int>("AdressHouseNumber");
+
                     b.Property<string>("ApplicationUserId");
+
+                    b.Property<DateTime?>("DateOfFinished");
 
                     b.Property<DateTime?>("DateOfRealize");
 
@@ -86,7 +98,7 @@ namespace FlowersShop.Data.Migrations
 
                     b.Property<bool>("IsRealized");
 
-                    b.Property<int>("TotalPrice");
+                    b.Property<double>("TotalPrice");
 
                     b.HasKey("Id");
 
@@ -103,6 +115,8 @@ namespace FlowersShop.Data.Migrations
                     b.Property<int>("Amount");
 
                     b.Property<string>("Description");
+
+                    b.Property<string>("File");
 
                     b.Property<string>("Name");
 

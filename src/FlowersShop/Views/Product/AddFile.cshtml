@@ -1,0 +1,16 @@
+﻿@model FlowersShop.Models.ProductsViewModels.ProductViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_LayoutAdmin";
+}
+<h4>Dodaj obraz do produktu</h4>
+<div class="row">
+    <div class="col-lg-10">
+        <form method="post" asp-action="AddFile" asp-controller="Product" enctype="multipart/form-data" asp-route-id="@Model.Id">
+            <input type="file" name="files" multiple />
+            <input type="submit" value="Upload" />
+        </form>        
+    </div>
+</div>
+

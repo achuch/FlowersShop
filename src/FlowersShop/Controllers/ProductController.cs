@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using FlowersShop.Data;
 using FlowersShop.Models;
 using FlowersShop.Models.ProductsViewModels;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace FlowersShop.Controllers
@@ -15,10 +18,12 @@ namespace FlowersShop.Controllers
     public class ProductController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IHostingEnvironment _environment;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(ApplicationDbContext context, IHostingEnvironment environment)
         {
-            _context = context;    
+            _context = context;
+            _environment = environment;
         }
 
         // GET: ProductViewModels
@@ -33,7 +38,7 @@ namespace FlowersShop.Controllers
         }
 
         // GET: ProductViewModels/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, string message)
         {
             if (id == null)
             {
@@ -45,10 +50,23 @@ namespace FlowersShop.Controllers
             {
                 return NotFound();
             }
+            
+            var viewmodel = new ProductsInOrderViewModel {ProductViewModel = productViewModel, ProductToOrder = new ProductToOrder()};
 
-            var tuple = new Tuple<ProductViewModel, ProductToOrder>(productViewModel, new ProductToOrder());
+            if (message == "A01")
+            {
+                message =
+                    "Niestety, aktualnie nie mamy teraz takiej iloœci danego produktu w magazynie. Zmniejsz iloœc lub skontaktuj siê z obs³ug¹";
+                viewmodel.Message = message;
+            }
+            if (message == "B01")
+            {
+                message =
+                    "Dziêkujemy, produkt zosta³ dodany do koszyka";
+                viewmodel.Message = message;
+            }
 
-            return View(tuple);
+            return View(viewmodel);
         }
 
         // GET: ProductViewModels/Create
@@ -57,18 +75,46 @@ namespace FlowersShop.Controllers
             return View();
         }
 
+        public IActionResult AddFile(int? id)
+        {
+            var prod = _context.ProductViewModel.First(p => p.Id == id);
+            return View(prod);
+        }
+
+        [HttpPost]
+        public IActionResult AddFile(int? id, ICollection<IFormFile> files)
+        {
+            var uploads = Path.Combine(_environment.WebRootPath, "PhotosOfProducts");
+            ProductViewModel prod = _context.ProductViewModel.First(p => p.Id == id);
+            foreach (var file in files)
+            {
+                if (file.Length > 0)
+                {
+                    using (var fileStream = new FileStream(Path.Combine(uploads, file.FileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                        prod.File = file.FileName;
+                        _context.Update(prod);
+                        _context.SaveChanges();
+
+                    }
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
         // POST: ProductViewModels/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Description,Name,Price,Type")] ProductViewModel productViewModel)
+        public async Task<IActionResult> Create([Bind("Id,Description,Name,Price,Type,File")] ProductViewModel productViewModel)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(productViewModel);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction("AddFile", new {id = productViewModel.Id});
             }
             return View(productViewModel);
         }
@@ -94,7 +140,7 @@ namespace FlowersShop.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Name,Price,Type,Amount")] ProductViewModel productViewModel)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Description,Name,Price,Type,Amount,File")] ProductViewModel productViewModel)
         {
             if (id != productViewModel.Id)
             {
@@ -119,7 +165,7 @@ namespace FlowersShop.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("AddFile", new {id = productViewModel.Id});
             }
             return View(productViewModel);
         }

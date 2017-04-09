@@ -45,6 +45,7 @@
             <div class="col-md-10">
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger" />
+                <input type="hidden" asp-for="File" Value="@Model.File"/>
             </div>
         </div>
         <div class="form-group">

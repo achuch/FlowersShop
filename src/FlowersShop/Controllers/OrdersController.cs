@@ -22,12 +22,53 @@ namespace FlowersShop.Controllers
             _userManager = userManager;
         }
 
-        // GET: Orders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> ShowShoppingBag()
         {
-            var applicationDbContext = await _context.Order.Include(o => o.ApplicationUser).ToListAsync();
+            var order = await _context.Order.Where(u => (u.ApplicationUserId == _userManager.GetUserId(User) && u.IsFinished == false))
+                .Include(o => o.ProductToOrders)
+                    .ThenInclude(o => o.Product)
+                .ToListAsync();
+            Order order2 = new Order();
+            if (order.Count != 0)
+            {
+                order2 = order.First();
+            }
+            
+            return View(order.Count == 0 ? null : order2);
+        }
+
+        public IActionResult FinishOrder(Order order)
+        {
+            return View(order);
+        }
+        public IActionResult FinishOrder2(Order order)
+        {
+            Order orderFromDb = _context.Order.First(o => o.Id == order.Id);
+            orderFromDb.IsFinished = true;
+            orderFromDb.DateOfFinished = DateTime.Now;
+            orderFromDb.AddressCity = order.AddressCity;
+            orderFromDb.AddressStreet = order.AddressStreet;
+            orderFromDb.AdressHouseNumber = order.AdressHouseNumber;
+            orderFromDb.AddressLocalNumber = order.AddressLocalNumber;
+            orderFromDb.AddressZipCode = orderFromDb.AddressZipCode;
+
+            _context.Update(orderFromDb);
+            _context.SaveChanges();
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        // GET: Orders
+        public IActionResult Index()
+        {
+            //var applicationDbContext = await _context.Order.Include(o => o.ApplicationUser).ToListAsync();
             //var order = _context.Order.First(u => (u.ApplicationUserId == _userManager.GetUserId(User) && u.IsFinished == false));
-            return View(applicationDbContext);
+            var orders =
+                _context.Order.Where(o => o.IsFinished == true && o.IsRealized == false)
+                    .Include(o => o.ProductToOrders)
+                    .ThenInclude(o => o.Product)
+                    .ToList();
+            return View(orders);
         }
 
         // GET: Orders/Details/5
@@ -38,7 +79,7 @@ namespace FlowersShop.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order.SingleOrDefaultAsync(m => m.Id == id);
+            var order = await _context.Order.Include(m => m.ProductToOrders).SingleOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
                 return NotFound();
@@ -93,7 +134,7 @@ namespace FlowersShop.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ApplicationUserId,DateOfRealize,DateTime,IsFinished,IsRealized,TotalPrice")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,IsRealized")] Order order)
         {
             if (id != order.Id)
             {
@@ -104,6 +145,10 @@ namespace FlowersShop.Controllers
             {
                 try
                 {
+                    if (order.IsRealized == true)
+                    {
+                        order.DateOfRealize = DateTime.Now;
+                    }
                     _context.Update(order);
                     await _context.SaveChangesAsync();
                 }

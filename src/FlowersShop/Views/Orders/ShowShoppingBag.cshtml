@@ -1,0 +1,59 @@
+﻿@model Order
+
+@{
+    ViewBag.Title = "Koszyk";
+    Layout = "_Layout";
+}
+
+<h2>Twój koszyk</h2>
+<hr/>
+@if (Model == null)
+{
+    <h4>Twój koszyk jest pusty... <i class="fa fa-frown-o"></i> Napełnij go !</h4>
+}
+else
+{
+    <h4>W Twoim koszyku jest całe mnóstwo rzeczy <i class="fa fa-smile-o"></i></h4>
+    <hr/>
+    <table class="table">
+        <thead>
+        <tr>
+            <td>
+                Produkt
+            </td>
+            <td>
+                Ilość
+            </td>
+            <td>
+                Cena
+            </td>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.ProductToOrders)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(model => item.Product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.AmountOfProduct)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => item.TotalPriceForThisProduct)
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <hr style="border-top: 4px solid #BFB2B2"/>
+    <label style="float: right; padding-bottom: 5px;">Total koszt: @Model.TotalPrice</label>
+    <hr style="width: 100%"/>
+
+    <form asp-action="FinishOrder" style="width: 100%">
+        <input asp-for="Id" type="hidden" Value="@Model.Id"/>
+        <input type="submit" Value="Zakończ" class="btn btn-default" style="float: right; margin-right: 20px;"/>
+    </form>
+}
+

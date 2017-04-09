@@ -102,54 +102,59 @@
 </div>*@
 <div class="row">
     <div class="col-md-12">
+        @*<form method="post" asp-action="File" asp-controller="Home" enctype="multipart/form-data">
+            <input type="file" name="files" multiple/>
+            <input type="submit" value="Upload" />
+        </form>*@
         <h2>Dostępne produkty:</h2>
-        <a asp-controller="Product" asp-action="Index">Pokaż</a>
-        <table class="table">
+        <table class="table" id="main_table_products">
             <thead>
-                <tr>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Price)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Type)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Description)
-                    </th>
-                    <th></th>
-                </tr>
+            <tr>
+                <th></th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Type)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th></th>
+            </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Price)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Type)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Description)
-                        </td>
-                        <td>
-                            <a asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                        </td>
-                        @if (SignInManager.IsSignedIn(User))
-                        {
-                            <td>
-                                <a class="AddToOrder">Dodaj do zamowienia</a> | <input type="number" id="AmoutOfProductToOrder" /> <input type="button" value="Dodaj"/>
-                            </td>
-                        }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td style="padding-top: 0px">
+                        <img style="width: 250px" src="PhotosOfProducts/@item.File"/>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
 
-                    </tr>
-                }
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <td>
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@item.Id">Zobacz</a>
+                        </td>
+                    }
+
+                </tr>
+            }
             </tbody>
         </table>
     </div>

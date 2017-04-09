@@ -2,21 +2,21 @@
 
 @{
     ViewData["Title"] = "Index";
+    Layout = "_LayoutAdmin";
 }
 
 <h2>Index</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DateOfRealize)
+                @Html.DisplayNameFor(model => model.DateTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateTime)
+                @Html.DisplayNameFor(model => model.DateOfFinished)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.IsFinished)
@@ -27,6 +27,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.TotalPrice)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductToOrders)
+            </th>
+            <th>
+                Adres dostawy
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -34,10 +40,10 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DateOfRealize)
+                @Html.DisplayFor(modelItem => item.DateTime)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
+                @Html.DisplayFor(modelItem => item.DateOfFinished)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.IsFinished)
@@ -49,9 +55,20 @@
                 @Html.DisplayFor(modelItem => item.TotalPrice)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <ul>
+                    @foreach (var prod in item.ProductToOrders)
+                    {
+                        <li>@Html.DisplayFor(it => prod.Product.Name) &#9;&#9;&#9; @Html.DisplayFor(it => prod.AmountOfProduct)</li>
+                    }
+                </ul>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AddressStreet) &nbsp; @Html.DisplayFor(modelItem => item.AdressHouseNumber)/@Html.DisplayFor(modelItem => item.AddressLocalNumber) <br/>
+                @Html.DisplayFor(modelItem => item.AddressCity) &nbsp; @Html.DisplayFor(modelItem => item.AddressZipCode)
+
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edycja</a> 
             </td>
         </tr>
 }

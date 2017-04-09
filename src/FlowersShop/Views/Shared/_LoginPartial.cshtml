@@ -14,12 +14,15 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    
+
     <form asp-area="" asp-controller="Account" asp-action="LogOff" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
-            <li>
-                <a style="border-left: 3px double white;">Koszyk &nbsp;<i class="fa fa-shopping-bag" aria-hidden="true"></i></a>
-            </li>
+            @if (user.Type == false)
+            {
+                <li>
+                    <a asp-controller="Orders" asp-action="ShowShoppingBag" style="border-left: 3px double white;">Koszyk &nbsp;<i class="fa fa-shopping-bag" aria-hidden="true"></i></a>
+                </li>
+            }
             <li>
                 <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage" style="border-right: 3px double white; border-left: 3px double white;">Witaj @user.FirstName @user.LastName</a>
             </li>
